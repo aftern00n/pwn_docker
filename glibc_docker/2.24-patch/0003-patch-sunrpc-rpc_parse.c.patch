@@ -1,0 +1,25 @@
+From 4af359eca4ad7d09df82db24d1c572a2d8e05c8d Mon Sep 17 00:00:00 2001
+From: glibc <glibc>
+Date: Thu, 9 Sep 2021 03:30:37 +0000
+Subject: [PATCH 3/4] patch sunrpc/rpc_parse.c
+
+---
+ sunrpc/rpc_parse.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sunrpc/rpc_parse.c b/sunrpc/rpc_parse.c
+index 1a1df6d..505a655 100644
+--- a/sunrpc/rpc_parse.c
++++ b/sunrpc/rpc_parse.c
+@@ -521,7 +521,7 @@ static void
+ get_prog_declaration (declaration * dec, defkind dkind, int num /* arg number */ )
+ {
+   token tok;
+-  char name[10];		/* argument name */
++  char name[MAXLINESIZE];		/* argument name */
+ 
+   if (dkind == DEF_PROGRAM)
+     {
+-- 
+2.17.1
+

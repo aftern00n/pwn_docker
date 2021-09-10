@@ -1,0 +1,29 @@
+From 32701800db0fe8422890638693a812a924b64634 Mon Sep 17 00:00:00 2001
+From: glibc <glibc>
+Date: Thu, 9 Sep 2021 02:08:00 +0000
+Subject: [PATCH 6/6] patch nis/nss_nisplus/nisplus-alias.c
+
+---
+ nis/nss_nisplus/nisplus-alias.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/nis/nss_nisplus/nisplus-alias.c b/nis/nss_nisplus/nisplus-alias.c
+index 7f698b4..3dab3dd 100644
+--- a/nis/nss_nisplus/nisplus-alias.c
++++ b/nis/nss_nisplus/nisplus-alias.c
+@@ -297,10 +297,10 @@ _nss_nisplus_getaliasbyname_r (const char *name, struct aliasent *alias,
+       return NSS_STATUS_UNAVAIL;
+     }
+ 
+-  char buf[strlen (name) + 9 + tablename_len];
++  char buf[9 + tablename_len];
+   int olderr = errno;
+ 
+-  snprintf (buf, sizeof (buf), "[name=%s],%s", name, tablename_val);
++  snprintf (buf, sizeof (buf), "[name=],%s", tablename_val);
+ 
+   nis_result *result = nis_list (buf, FOLLOW_PATH | FOLLOW_LINKS, NULL, NULL);
+ 
+-- 
+2.17.1
+

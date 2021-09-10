@@ -1,0 +1,32 @@
+From d0979dce3448ceebb0891dea9923b63c042d2cbb Mon Sep 17 00:00:00 2001
+From: glibc <glibc>
+Date: Thu, 9 Sep 2021 01:35:45 +0000
+Subject: [PATCH 1/6] patch stdlib/setenv.c
+
+---
+ stdlib/setenv.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/stdlib/setenv.c b/stdlib/setenv.c
+index da61ee0..5c7e96c 100644
+--- a/stdlib/setenv.c
++++ b/stdlib/setenv.c
+@@ -277,6 +277,7 @@ unsetenv (const char *name)
+ 
+   ep = __environ;
+   if (ep != NULL)
++  {
+     while (*ep != NULL)
+       if (!strncmp (*ep, name, len) && (*ep)[len] == '=')
+ 	{
+@@ -290,6 +291,7 @@ unsetenv (const char *name)
+ 	}
+       else
+ 	++ep;
++  }
+ 
+   UNLOCK;
+ 
+-- 
+2.17.1
+

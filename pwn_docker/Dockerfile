@@ -1,0 +1,79 @@
+FROM ubuntu:bionic
+RUN sed -i "s/http:\/\/archive.ubuntu.com/http:\/\/mirrors.tuna.tsinghua.edu.cn/g" /etc/apt/sources.list && \
+    apt-get update && apt-get -y dist-upgrade && \
+    DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata && \
+    apt-get install -y apt-utils net-tools && \
+    apt-get install -y python3 python3-pip && \
+    apt-get install -y openssh-server && \
+    apt-get install -y zsh sudo curl fonts-powerline && \
+    apt-get install -y git && \
+    apt-get install -y bsdmainutils netcat-traditional inetutils-ping && \
+    apt-get install -y ltrace strace
+
+RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+RUN mkdir -p ~/.pip && echo "[global]\nindex-url = https://repo.huaweicloud.com/repository/pypi/simple\ntrusted-host = repo.huaweicloud.com\ntimeout = 120" > ~/.pip/pip.conf
+
+RUN git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
+RUN cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
+RUN git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+RUN sed -i "s/plugins=(git)/plugins=(git zsh-autosuggestions zsh-syntax-highlighting)/g" ~/.zshrc
+
+RUN git clone https://github.com/chxuan/vimplus.git ~/.vimplus
+RUN cd ~/.vimplus && ./install.sh
+RUN cd ~/.vim/plugged/YouCompleteMe && python3 install.py --clang-completer
+
+RUN git clone https://github.com/pwndbg/pwndbg.git ~/pwndbg
+RUN cd ~/pwndbg && ./setup.sh
+
+RUN git clone https://github.com/scwuaptx/Pwngdb.git ~/Pwngdb
+RUN cp ~/Pwngdb/.gdbinit ~/
+RUN sed -i "s@source ~/peda/peda.py@source ~/pwndbg/gdbinit.py@g" ~/.gdbinit 
+
+RUN pip3 install pwntools
+
+RUN apt-get install -y tmux
+RUN echo "set-option -g mouse on" > ~/.tmux.conf
+
+# Run 32-bit ELF
+RUN apt-get install -y libc6-dev-i386
+
+# Install glibc debugging info
+RUN apt-get install -y libc6-dbg && \
+    dpkg --add-architecture i386 && \
+    apt-get update && \
+    apt-get install -y libc6-dbg:i386
+
+# Install ropgadget, one_gadget, seccomp-tools
+RUN pip3 install ropgadget && \
+    apt-get install -y ruby gem ruby-dev && \
+    gem install one_gadget seccomp-tools
+
+RUN pip3 install z3-solver angr
+
+# Install python2, pip2, pwntools
+RUN apt-get install -y python python-dev \
+	&& wget -P ~/ https://bootstrap.pypa.io/pip/2.7/get-pip.py \
+	&& python ~/get-pip.py \
+    && pip2 install --upgrade pip \
+	&& pip2 install --upgrade pwntools \
+    && pip2 install pathlib2
+
+# update pwntools to newest
+RUN git clone --depth 1 git://github.com/Gallopsled/pwntools ~/pwntools \
+	&& pip2 install --upgrade ~/pwntools \
+    && pip3 install --upgrade ~/pwntools \
+	&& mkdir ~/.pwntools-cache && echo "never" > ~/.pwntools-cache/update
+
+RUN apt-get install -y autoconf automake libtool && \
+    git clone https://github.com/NixOS/patchelf.git ~/patchelf && \
+    cd ~/patchelf && ./bootstrap.sh && ./configure && make && make install
+
+# Install glibc source
+WORKDIR /root
+RUN sed -i "s/# deb-src http:\/\/mirrors.tuna.tsinghua.edu.cn/deb-src http:\/\/mirrors.tuna.tsinghua.edu.cn/g" /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get source libc6-dev
+
+ENTRYPOINT service ssh start && sleep infinity

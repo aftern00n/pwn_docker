@@ -1,0 +1,36 @@
+From 6095ec5e1cbf08e0bffdc4e64fc37e84d9474d3c Mon Sep 17 00:00:00 2001
+From: glibc <glibc>
+Date: Thu, 9 Sep 2021 03:28:36 +0000
+Subject: [PATCH 2/4] patch sysdeps/ieee754/dbl-64/e_pow.c
+
+---
+ sysdeps/ieee754/dbl-64/e_pow.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sysdeps/ieee754/dbl-64/e_pow.c b/sysdeps/ieee754/dbl-64/e_pow.c
+index 663fa39..bd758b5 100644
+--- a/sysdeps/ieee754/dbl-64/e_pow.c
++++ b/sysdeps/ieee754/dbl-64/e_pow.c
+@@ -466,15 +466,15 @@ checkint (double x)
+     return (n & 1) ? -1 : 1;	/* odd or even */
+   if (k > 20)
+     {
+-      if (n << (k - 20))
++      if (n << (k - 20) != 0)
+ 	return 0;		/* if not integer */
+-      return (n << (k - 21)) ? -1 : 1;
++      return (n << (k - 21) != 0) ? -1 : 1;
+     }
+   if (n)
+     return 0;			/*if  not integer */
+   if (k == 20)
+     return (m & 1) ? -1 : 1;
+-  if (m << (k + 12))
++  if (m << (k + 12) != 0)
+     return 0;
+-  return (m << (k + 11)) ? -1 : 1;
++  return (m << (k + 11) != 0) ? -1 : 1;
+ }
+-- 
+2.17.1
+
