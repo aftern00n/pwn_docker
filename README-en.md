@@ -2,10 +2,10 @@
 
 [简体中文](README.md) | [English](README-en.md)
 
-This is a docker environment for pwn in ctf game. I reference a project called [skysider/pwndocker](https://github.com/skysider/pwndocker), which offers a docker including many useful tools used in pwn solving and different version of glibc. Since we have  skysider/pwndocker, Why I still spend my energy to create a new docker? because:
+This is a docker environment for pwn in ctf game. I reference a project called [skysider/pwndocker](https://github.com/skysider/pwndocker), which offers a docker including many useful tools used in pwn solving and different version of glibc. Since we have  skysider/pwndocker, why I still spend my energy to create a new docker? Because:
 
-- I like using vim to write exp and ohmyzsh to configure terminal shell, so I add these two tools.
-- Although skysider/pwndocker integrates many versions of glibc,  but it doesn't have glibc source code and I want to debug glibc in source level.
+- I prefer using vim to write exp and ohmyzsh to configure terminal shell, so I add these two tools.
+- Although skysider/pwndocker integrates many versions of glibc,  but it doesn't have glibc sources and I want to debug glibc in source level.
 
 ## Usage
 
@@ -19,7 +19,7 @@ docker run --name ${container_name} -d -v ${ctf_path}:/ctf -p ${ssh_port}:22 --c
 docker exec -it ${container_name} /bin/zsh
 ```
 
-If you want to build docker image for youself, firstly you should clont the project:
+If you want to build docker image for youself, firstly you should clone this project:
 
 ```
 git clone https://github.com/aftern00n/pwn_docker.git

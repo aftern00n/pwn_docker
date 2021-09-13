@@ -2,7 +2,7 @@
 
 [简体中文](README.md) | [English](README-en.md)
 
-这个项目是参考https://github.com/skysider/pwndocker，该项目已经集成了很多辅助pwn解题的工具和glibc的各种版本，那为什么我还要在建一个pwn_docker，原因主要有如下两点：
+这个项目是参考[skysider/pwndocker](https://github.com/skysider/pwndocker)，该项目已经集成了很多辅助pwn解题的工具和glibc的各种版本，那为什么我还要在建一个pwn_docker，原因主要有如下两点：
 
 - 本人比较喜欢搭配vim + ohmyzsh的工具来编写exp，因此加入vimplus和ohmyzsh
 - skysider/pwndocker虽然集成了众多版本的glibc，但是无法进行源码调试
@@ -11,7 +11,7 @@
 
 ## 使用
 
-pwn_docker镜像已经上传至docker hub，你可以直接下载，可使用docker exec进入容器，也可在容器中添加ssh私钥：
+pwn_docker镜像已经上传至docker hub，你可以直接下载。可使用docker exec进入容器，也可在容器中添加ssh公钥：
 
 ```
 docker pull wuhouxiaoqi/pwn_docker
