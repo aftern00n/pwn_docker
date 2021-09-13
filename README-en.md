@@ -2,16 +2,16 @@
 
 [简体中文](README.md) | [English](README-en.md)
 
-这个项目是参考https://github.com/skysider/pwndocker，该项目已经集成了很多辅助pwn解题的工具和glibc的各种版本，那为什么我还要在建一个pwn_docker，原因主要有如下两点：
+This is a docker environment for pwn in ctf game. I reference a project called [skysider/pwndocker](https://github.com/skysider/pwndocker), which offers a docker including many useful tools used in pwn solving and different version of glibc. Since we have  skysider/pwndocker, Why I still spend my energy to create a new docker? because:
 
-- 本人比较喜欢搭配vim + ohmyzsh的工具来编写exp，因此加入vimplus和ohmyzsh
-- skysider/pwndocker虽然集成了众多版本的glibc，但是无法进行源码调试
+- I like using vim to write exp and ohmyzsh to configure terminal shell, so I add these two tools.
+- Although skysider/pwndocker integrates many versions of glibc,  but it doesn't have glibc source code and I want to debug glibc in source level.
 
+## Usage
 
+The pwn_docker has been pushed into docker hub so you can docker pull it directly. You can control the docker by docker exec command or add ssh public key.
 
-## 使用
-
-pwn_docker镜像已经上传至docker hub，你可以直接下载，可使用docker exec进入容器，也可在容器中添加ssh私钥：
+Run command:
 
 ```
 docker pull wuhouxiaoqi/pwn_docker
@@ -19,27 +19,25 @@ docker run --name ${container_name} -d -v ${ctf_path}:/ctf -p ${ssh_port}:22 --c
 docker exec -it ${container_name} /bin/zsh
 ```
 
-想要自己构建镜像的，先克隆本仓库：
+If you want to build docker image for youself, firstly you should clont the project:
 
 ```
 git clone https://github.com/aftern00n/pwn_docker.git
 ```
 
-然后构建glibc_docker镜像：
+Then build the glibc_docker image:
 
 ```
 cd glibc_docker && docker build -t glibc_docker .
 ```
 
-最后构建pwn_docker镜像：
+And build the pwn_docker image:
 
 ```
 cd pwn_docker && docker build -t pwn_docker .
 ```
 
-
-
-## 已有软件
+## Installed software
 
 - [vimplus](https://github.com/chxuan/vimplus.git)
 - [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh.git)
@@ -58,9 +56,9 @@ cd pwn_docker && docker build -t pwn_docker .
 
 
 
-## 已有glibc
+## Installed glibc
 
-源码和编译好的glibc默认都在/glibc目录：
+The sources of glibc and compiled binarys are in the directory /glibc：
 
 ```
 /glibc
@@ -84,14 +82,14 @@ cd pwn_docker && docker build -t pwn_docker .
     `-- glibc-2.31
 ```
 
-pwn_docker是基于ubuntu18.04构建的，ubuntu18.04下glibc版本为2.27，如果想使用其他glibc版本运行程序，可以采取以下两种方案（首选第一种），以glibc-2.23为例：
+pwn_docker is  based on the image of ubuntu:18.04 whose glibc version is 2.27. If you want to run programs with other libc version, you can use the following two methods (the first is recommended), we take glibc 2.23 as an example:
 
 ```
 patchelf --set-interpreter /glibc/64/2.23/lib/ld-2.23.so --set-rpath /glibc/64/2.23/lib binary
 gdb ./binary
 ```
 
-或
+or
 
 ```
 from pwn import *

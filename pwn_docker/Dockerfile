@@ -61,7 +61,7 @@ RUN apt-get install -y python python-dev \
     && pip2 install pathlib2
 
 # update pwntools to newest
-RUN git clone --depth 1 git://github.com/Gallopsled/pwntools ~/pwntools \
+RUN git clone --depth 1 https://github.com/Gallopsled/pwntools.git ~/pwntools \
 	&& pip2 install --upgrade ~/pwntools \
     && pip3 install --upgrade ~/pwntools \
 	&& mkdir ~/.pwntools-cache && echo "never" > ~/.pwntools-cache/update
