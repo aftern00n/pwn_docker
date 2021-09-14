@@ -76,4 +76,6 @@ RUN sed -i "s/# deb-src http:\/\/mirrors.tuna.tsinghua.edu.cn/deb-src http:\/\/m
     apt-get update && \
     apt-get source libc6-dev
 
+COPY --from=wuhouxiaoqi/glibc_docker /glibc /glibc
+
 ENTRYPOINT service ssh start && sleep infinity

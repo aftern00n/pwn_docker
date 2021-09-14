@@ -63,4 +63,13 @@ RUN cd /glibc/source/glibc-2.31 && mkdir build && \
     cd build && ../configure --prefix=/glibc/64/2.31 --enable-debug=yes CFLAGS="-O2 -g" CPPFLAGS="-O2 -g" && \
     make -j `nproc` && make install -j `nproc`
 
+RUN rm -rf /glibc/source/glibc-2.23/build && \
+    rm -rf /glibc/source/glibc-2.24/build && \
+    rm -rf /glibc/source/glibc-2.26/build && \
+    rm -rf /glibc/source/glibc-2.27/build && \
+    rm -rf /glibc/source/glibc-2.28/build && \
+    rm -rf /glibc/source/glibc-2.29/build && \
+    rm -rf /glibc/source/glibc-2.30/build && \
+    rm -rf /glibc/source/glibc-2.31/build
+
 ENTRYPOINT sleep infinity
