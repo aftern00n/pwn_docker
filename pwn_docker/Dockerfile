@@ -54,17 +54,17 @@ RUN pip3 install z3-solver angr
 
 # Install python2, pip2, pwntools
 RUN apt-get install -y python python-dev \
-	&& wget -P ~/ https://bootstrap.pypa.io/pip/2.7/get-pip.py \
-	&& python ~/get-pip.py \
+    && wget -P ~/ https://bootstrap.pypa.io/pip/2.7/get-pip.py \
+    && python ~/get-pip.py \
     && pip2 install --upgrade pip \
-	&& pip2 install --upgrade pwntools \
+    && pip2 install --upgrade pwntools \
     && pip2 install pathlib2
 
 # update pwntools to newest
 RUN git clone --depth 1 https://github.com/Gallopsled/pwntools.git ~/pwntools \
-	&& pip2 install --upgrade ~/pwntools \
+    && pip2 install --upgrade ~/pwntools \
     && pip3 install --upgrade ~/pwntools \
-	&& mkdir ~/.pwntools-cache && echo "never" > ~/.pwntools-cache/update
+    && mkdir ~/.pwntools-cache && echo "never" > ~/.pwntools-cache/update
 
 RUN apt-get install -y autoconf automake libtool && \
     git clone https://github.com/NixOS/patchelf.git ~/patchelf && \
