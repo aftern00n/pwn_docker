@@ -76,6 +76,8 @@ RUN sed -i "s/# deb-src http:\/\/mirrors.tuna.tsinghua.edu.cn/deb-src http:\/\/m
     apt-get update && \
     apt-get source libc6-dev
 
+RUN echo "let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'" >> ~/.vimrc
+
 COPY --from=wuhouxiaoqi/glibc_docker /glibc /glibc
 
 ENTRYPOINT service ssh start && sleep infinity
