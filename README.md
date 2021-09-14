@@ -105,3 +105,5 @@ p = process(["/glibc/64/2.23/lib/ld-2.23.so", "./binary"], env={"LD_PRELOAD":"/g
 ### 2021-09-14
 
 pwn_docker：给`.vimrc`添加ycm配置文件的全局变量。
+
+glibc_docker: 删除glibc源码编译过程中的build目录，不然镜像会比较大。

@@ -103,3 +103,5 @@ p = process(["/glibc/64/2.23/lib/ld-2.23.so", "./binary"], env={"LD_PRELOAD":"/g
 ### 2021-09-14
 
 pwn_docker: add `ycm_global_ycm_extra_conf` variable in `.vimrc`.
+
+glibc_docker: delete the build folder after finishing compilation, otherwise the size of image would be too large.
