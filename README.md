@@ -37,6 +37,12 @@ cd glibc_docker && docker build -t glibc_docker .
 cd pwn_docker && docker build -t pwn_docker .
 ```
 
+注意构建pwn_docker之前，修改Dockerfile最后COPY --from指向的镜像名称为前面构建的gibc_docker镜像名称：
+
+```
+COPY --from=${glibc_docker_image_name} /glibc /glibc
+```
+
 
 
 ## 已有软件

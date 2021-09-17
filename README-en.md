@@ -37,6 +37,14 @@ And build the pwn_docker image:
 cd pwn_docker && docker build -t pwn_docker .
 ```
 
+PS: before building pwn_docker, you should update glibc_docker image name in Dockerfile of pwn_docker:
+
+```
+COPY --from=${glibc_docker_image_name} /glibc /glibc
+```
+
+
+
 ## Installed software
 
 - [vimplus](https://github.com/chxuan/vimplus.git)
