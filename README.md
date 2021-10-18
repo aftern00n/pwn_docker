@@ -107,6 +107,9 @@ p = process(["/glibc/64/2.23/lib/ld-2.23.so", "./binary"], env={"LD_PRELOAD":"/g
 
 
 ## 更新日志
+### 2021-10-18
+
+pwn_docker: python3添加z3-solver angr keystone-engine lief, python2添加z3-solver keystone-engine
 
 ### 2021-09-14
 

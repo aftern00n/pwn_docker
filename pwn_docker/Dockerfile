@@ -50,8 +50,6 @@ RUN pip3 install ropgadget && \
     apt-get install -y ruby gem ruby-dev && \
     gem install one_gadget seccomp-tools
 
-RUN pip3 install z3-solver angr
-
 # Install python2, pip2, pwntools
 RUN apt-get install -y python python-dev \
     && wget -P ~/ https://bootstrap.pypa.io/pip/2.7/get-pip.py \
@@ -60,11 +58,14 @@ RUN apt-get install -y python python-dev \
     && pip2 install --upgrade pwntools \
     && pip2 install pathlib2
 
+RUN pip3 install z3-solver angr keystone-engine lief
+RUN pip2 install z3-solver keystone-engine
+
 # update pwntools to newest
 RUN git clone --depth 1 https://github.com/Gallopsled/pwntools.git ~/pwntools \
     && pip2 install --upgrade ~/pwntools \
     && pip3 install --upgrade ~/pwntools \
-    && mkdir ~/.pwntools-cache && echo "never" > ~/.pwntools-cache/update
+    && echo "[update]\ninterval=never" > ~/.pwn.conf
 
 RUN apt-get install -y autoconf automake libtool && \
     git clone https://github.com/NixOS/patchelf.git ~/patchelf && \
