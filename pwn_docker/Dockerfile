@@ -81,4 +81,6 @@ RUN echo "let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'" >> ~/.vimrc
 
 COPY --from=wuhouxiaoqi/glibc_docker /glibc /glibc
 
+ENV LANG=C.UTF-8
+
 ENTRYPOINT service ssh start && sleep infinity
