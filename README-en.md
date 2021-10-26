@@ -58,6 +58,8 @@ COPY --from=${glibc_docker_image_name} /glibc /glibc
 - [z3-solver](https://github.com/Z3Prover/z3.git)
 - [angr](https://github.com/angr/angr.git)
 - [patchelf](https://github.com/NixOS/patchelf.git)
+- [lief](https://github.com/lief-project/LIEF)
+- [keystone](https://github.com/keystone-engine/keystone)
 - [tmux](https://github.com/tmux/tmux.git)
 - [ltrace](https://linux.die.net/man/1/ltrace)
 - [strace](https://linux.die.net/man/1/strace)
@@ -107,6 +109,11 @@ p = process(["/glibc/64/2.23/lib/ld-2.23.so", "./binary"], env={"LD_PRELOAD":"/g
 
 
 ## Change Log
+
+### 2021-10-26
+
+pwn_docker: add env LANG=C.UTF-8，in order to solve this bug: [https://github.com/Gallopsled/pwntools/issues/1575](https://github.com/Gallopsled/pwntools/issues/1575)
+
 ### 2021-10-18
 
 pwn_docker: python3 add z3-solver angr keystone-engine lief, python2 add z3-solver keystone-engine 

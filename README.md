@@ -58,6 +58,8 @@ COPY --from=${glibc_docker_image_name} /glibc /glibc
 - [z3-solver](https://github.com/Z3Prover/z3.git)
 - [angr](https://github.com/angr/angr.git)
 - [patchelf](https://github.com/NixOS/patchelf.git)
+- [lief](https://github.com/lief-project/LIEF)
+- [keystone](https://github.com/keystone-engine/keystone)
 - [tmux](https://github.com/tmux/tmux.git)
 - [ltrace](https://linux.die.net/man/1/ltrace)
 - [strace](https://linux.die.net/man/1/strace)
@@ -107,9 +109,14 @@ p = process(["/glibc/64/2.23/lib/ld-2.23.so", "./binary"], env={"LD_PRELOAD":"/g
 
 
 ## 更新日志
+
+### 2021-10-26
+
+pwn_docker：增加env变量LANG=C.UTF-8，主要是为了解决pwntools的这个问题：[https://github.com/Gallopsled/pwntools/issues/1575](https://github.com/Gallopsled/pwntools/issues/1575)
+
 ### 2021-10-18
 
-pwn_docker: python3添加z3-solver angr keystone-engine lief, python2添加z3-solver keystone-engine
+pwn_docker： python3添加z3-solver angr keystone-engine lief, python2添加z3-solver keystone-engine
 
 ### 2021-09-14
 
