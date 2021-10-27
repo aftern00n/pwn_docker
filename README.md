@@ -71,25 +71,38 @@ COPY --from=${glibc_docker_image_name} /glibc /glibc
 源码和编译好的glibc默认都在/glibc目录：
 
 ```
-/glibc
-|-- 64
-|   |-- 2.23
-|   |-- 2.24
-|   |-- 2.26
-|   |-- 2.27
-|   |-- 2.28
-|   |-- 2.29
-|   |-- 2.30
-|   `-- 2.31
-`-- source
-    |-- glibc-2.23
-    |-- glibc-2.24
-    |-- glibc-2.26
-    |-- glibc-2.27
-    |-- glibc-2.28
-    |-- glibc-2.29
-    |-- glibc-2.30
-    `-- glibc-2.31
+➜  / tree -d /glibc -L 2
+glibc
+├── 32
+│   ├── 2.27
+│   ├── 2.28
+│   ├── 2.29
+│   ├── 2.30
+│   ├── 2.31
+│   ├── 2.33
+│   └── 2.34
+├── 64
+│   ├── 2.23
+│   ├── 2.24
+│   ├── 2.26
+│   ├── 2.27
+│   ├── 2.28
+│   ├── 2.29
+│   ├── 2.30
+│   ├── 2.31
+│   ├── 2.33
+│   └── 2.34
+└── source
+    ├── glibc-2.23
+    ├── glibc-2.24
+    ├── glibc-2.26
+    ├── glibc-2.27
+    ├── glibc-2.28
+    ├── glibc-2.29
+    ├── glibc-2.30
+    ├── glibc-2.31
+    ├── glibc-2.33
+    └── glibc-2.34
 ```
 
 pwn_docker是基于ubuntu18.04构建的，ubuntu18.04下glibc版本为2.27，如果想使用其他glibc版本运行程序，可以采取以下两种方案（首选第一种），以glibc-2.23为例：
@@ -113,6 +126,8 @@ p = process(["/glibc/64/2.23/lib/ld-2.23.so", "./binary"], env={"LD_PRELOAD":"/g
 ### 2021-10-26
 
 pwn_docker：增加env变量LANG=C.UTF-8，主要是为了解决pwntools的这个问题：[https://github.com/Gallopsled/pwntools/issues/1575](https://github.com/Gallopsled/pwntools/issues/1575)
+
+glibc_docker：增加64位的glibc 2.33和2.34，以及从2.27至2.34的32位glibc。
 
 ### 2021-10-18
 

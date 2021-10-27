@@ -71,25 +71,38 @@ COPY --from=${glibc_docker_image_name} /glibc /glibc
 The sources of glibc and compiled binarys are in the directory /glibc：
 
 ```
-/glibc
-|-- 64
-|   |-- 2.23
-|   |-- 2.24
-|   |-- 2.26
-|   |-- 2.27
-|   |-- 2.28
-|   |-- 2.29
-|   |-- 2.30
-|   `-- 2.31
-`-- source
-    |-- glibc-2.23
-    |-- glibc-2.24
-    |-- glibc-2.26
-    |-- glibc-2.27
-    |-- glibc-2.28
-    |-- glibc-2.29
-    |-- glibc-2.30
-    `-- glibc-2.31
+➜  / tree -d glibc -L 2
+glibc
+├── 32
+│   ├── 2.27
+│   ├── 2.28
+│   ├── 2.29
+│   ├── 2.30
+│   ├── 2.31
+│   ├── 2.33
+│   └── 2.34
+├── 64
+│   ├── 2.23
+│   ├── 2.24
+│   ├── 2.26
+│   ├── 2.27
+│   ├── 2.28
+│   ├── 2.29
+│   ├── 2.30
+│   ├── 2.31
+│   ├── 2.33
+│   └── 2.34
+└── source
+    ├── glibc-2.23
+    ├── glibc-2.24
+    ├── glibc-2.26
+    ├── glibc-2.27
+    ├── glibc-2.28
+    ├── glibc-2.29
+    ├── glibc-2.30
+    ├── glibc-2.31
+    ├── glibc-2.33
+    └── glibc-2.34
 ```
 
 pwn_docker is  based on the image of ubuntu:18.04 whose glibc version is 2.27. If you want to run programs with other libc version, you can use the following two methods (the first is recommended), we take glibc 2.23 as an example:
@@ -113,6 +126,8 @@ p = process(["/glibc/64/2.23/lib/ld-2.23.so", "./binary"], env={"LD_PRELOAD":"/g
 ### 2021-10-26
 
 pwn_docker: add env LANG=C.UTF-8，in order to solve this bug: [https://github.com/Gallopsled/pwntools/issues/1575](https://github.com/Gallopsled/pwntools/issues/1575)
+
+glibc_docker: add 64 bit glibc 2.33 and 2.34, and 32 bit glibc from 2.27 to 2.34
 
 ### 2021-10-18
 
