@@ -81,6 +81,12 @@ RUN echo "let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'" >> ~/.vimrc
 
 COPY --from=wuhouxiaoqi/glibc_docker /glibc /glibc
 
+RUN apt-get update
+RUN apt-get install -y gcc-arm-linux-gnueabi gcc-arm-linux-gnueabihf gcc-aarch64-linux-gnu
+RUN apt-get install -y gcc-mips-linux-gnu gcc-mips64-linux-gnuabi64 gcc-mips64el-linux-gnuabi64 gcc-mipsel-linux-gnu
+RUN apt-get install -y qemu qemu-user-static
+
 ENV LANG=C.UTF-8
+RUN chsh -s /bin/zsh
 
 ENTRYPOINT service ssh start && sleep infinity
