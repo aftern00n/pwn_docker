@@ -1,4 +1,4 @@
-FROM ubuntu:bionic
+FROM ubuntu:jammy
 RUN sed -i "s/http:\/\/archive.ubuntu.com/http:\/\/mirrors.tuna.tsinghua.edu.cn/g" /etc/apt/sources.list && \
     apt-get update && apt-get -y dist-upgrade && \
     DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata && \
@@ -12,7 +12,8 @@ RUN sed -i "s/http:\/\/archive.ubuntu.com/http:\/\/mirrors.tuna.tsinghua.edu.cn/
 
 RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
-RUN mkdir -p ~/.pip && echo "[global]\nindex-url = https://repo.huaweicloud.com/repository/pypi/simple\ntrusted-host = repo.huaweicloud.com\ntimeout = 120" > ~/.pip/pip.conf
+#RUN mkdir -p ~/.pip && echo "[global]\nindex-url = https://repo.huaweicloud.com/repository/pypi/simple\ntrusted-host = repo.huaweicloud.com\ntimeout = 120" > ~/.pip/pip.conf
+RUN mkdir -p ~/.pip && echo "[global]\nindex-url = https://mirrors.aliyun.com/pypi/simple\ntrusted-host = mirrors.aliyun.com\ntimeout = 120" > ~/.pip/pip.conf
 
 RUN git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
 RUN cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
@@ -51,9 +52,9 @@ RUN pip3 install ropgadget && \
     gem install one_gadget seccomp-tools
 
 # Install python2, pip2, pwntools
-RUN apt-get install -y python python-dev \
+RUN apt-get install -y python2 python2-dev \
     && wget -P ~/ https://bootstrap.pypa.io/pip/2.7/get-pip.py \
-    && python ~/get-pip.py \
+    && python2 ~/get-pip.py \
     && pip2 install --upgrade pip \
     && pip2 install --upgrade pwntools \
     && pip2 install pathlib2
@@ -86,6 +87,7 @@ RUN apt-get install -y gcc-arm-linux-gnueabi gcc-arm-linux-gnueabihf gcc-aarch64
 RUN apt-get install -y gcc-mips-linux-gnu gcc-mips64-linux-gnuabi64 gcc-mips64el-linux-gnuabi64 gcc-mipsel-linux-gnu
 RUN apt-get install -y qemu qemu-user-static
 RUN apt-get install -y gdb-multiarch
+RUN git clone https://github.com/longld/peda.git ~/peda
 RUN wget -O ~/.gdbinit-gef.py -q https://gef.blah.cat/py
 RUN sed -i '1i #source ~/.gdbinit-gef.py' ~/.gdbinit
 RUN sed -i '1i #source ~/peda/peda.py' ~/.gdbinit
