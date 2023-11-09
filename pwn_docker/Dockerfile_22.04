@@ -93,10 +93,12 @@ RUN sed -i '1i #source ~/.gdbinit-gef.py' ~/.gdbinit
 RUN sed -i '1i #source ~/peda/peda.py' ~/.gdbinit
 RUN apt-get install -y gcc-riscv64-linux-gnu binutils-riscv64-linux-gnu
 RUN apt-get install -y cpio
-RUN sed -i 's/gef➤/gef>/g' ~/.gdbinit-gef.py
 
-RUN pip install pycrypto
+RUN pip2 install pycrypto
 RUN pip3 install pycrypto
+RUN pip2 install click watchdog timeout-decorator
+
+RUN sed -i 's/gef➤/gef>/g' ~/.gdbinit-gef.py
 RUN sed -i 's/collections/_collections_abc/g' ~/.vim/plugged/YouCompleteMe/third_party/ycmd/third_party/frozendict/frozendict/__init__.py
 RUN sed -i 's/collections/_collections_abc/g' ~/.vim/plugged/YouCompleteMe/third_party/ycmd/third_party/bottle/bottle.py
 

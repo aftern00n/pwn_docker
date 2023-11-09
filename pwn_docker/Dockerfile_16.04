@@ -1,19 +1,33 @@
-FROM ubuntu:focal
+FROM ubuntu:xenial
 RUN sed -i "s/http:\/\/archive.ubuntu.com/http:\/\/mirrors.tuna.tsinghua.edu.cn/g" /etc/apt/sources.list && \
     apt-get update && apt-get -y dist-upgrade && \
     DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata && \
     apt-get install -y apt-utils net-tools && \
-    apt-get install -y python3 python3-pip && \
     apt-get install -y openssh-server && \
     apt-get install -y zsh sudo curl fonts-powerline && \
     apt-get install -y git && \
     apt-get install -y bsdmainutils netcat-traditional inetutils-ping && \
-    apt-get install -y ltrace strace
+    apt-get install -y ltrace strace && \
+    apt-get install -y make gcc
 
 RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
-#RUN mkdir -p ~/.pip && echo "[global]\nindex-url = https://repo.huaweicloud.com/repository/pypi/simple\ntrusted-host = repo.huaweicloud.com\ntimeout = 120" > ~/.pip/pip.conf
-RUN mkdir -p ~/.pip && echo "[global]\nindex-url = https://mirrors.aliyun.com/pypi/simple\ntrusted-host = mirrors.aliyun.com\ntimeout = 120" > ~/.pip/pip.conf
+RUN mkdir -p ~/.pip && echo "[global]\nindex-url = https://repo.huaweicloud.com/repository/pypi/simple\ntrusted-host = repo.huaweicloud.com\ntimeout = 120" > ~/.pip/pip.conf
+
+# Install python2, pip2, pwntools
+RUN apt-get install -y python python-dev \
+    && wget -P ~/pip2 https://bootstrap.pypa.io/pip/2.7/get-pip.py \
+    && python ~/pip2/get-pip.py \
+    && pip2 install --upgrade pip \
+    && pip2 install --upgrade pwntools \
+    && pip2 install pathlib2
+
+RUN apt-get install -y python3 python3-pip \
+    && wget -P ~/pip3 https://bootstrap.pypa.io/pip/3.5/get-pip.py \
+    && python3 ~/pip3/get-pip.py \
+    && pip3 install --upgrade pip \
+    && apt-get install -y libffi-dev -y \
+    && pip3 install --upgrade pwntools
 
 RUN git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
 RUN cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
@@ -25,14 +39,13 @@ RUN git clone https://github.com/chxuan/vimplus.git ~/.vimplus
 RUN cd ~/.vimplus && ./install.sh
 RUN cd ~/.vim/plugged/YouCompleteMe && python3 install.py --clang-completer
 
-RUN git clone https://github.com/pwndbg/pwndbg.git ~/pwndbg
-RUN cd ~/pwndbg && ./setup.sh
+
+#RUN git clone https://github.com/pwndbg/pwndbg.git ~/pwndbg
+#RUN cd ~/pwndbg && ./setup.sh
 
 RUN git clone https://github.com/scwuaptx/Pwngdb.git ~/Pwngdb
 RUN cp ~/Pwngdb/.gdbinit ~/
 RUN sed -i "s@source ~/peda/peda.py@source ~/pwndbg/gdbinit.py@g" ~/.gdbinit 
-
-RUN pip3 install pwntools
 
 RUN apt-get install -y tmux
 RUN echo "set-option -g mouse on" > ~/.tmux.conf
@@ -47,17 +60,12 @@ RUN apt-get install -y libc6-dbg && \
     apt-get install -y libc6-dbg:i386
 
 # Install ropgadget, one_gadget, seccomp-tools
-RUN pip3 install ropgadget && \
-    apt-get install -y ruby gem ruby-dev && \
-    gem install one_gadget seccomp-tools
+RUN apt-get install -y software-properties-common python-software-properties && \
+    add-apt-repository -y ppa:brightbox/ruby-ng && \
+    apt-get update && apt-get install -y ruby2.6 ruby2.6-dev
 
-# Install python2, pip2, pwntools
-RUN apt-get install -y python python-dev \
-    && wget -P ~/ https://bootstrap.pypa.io/pip/2.7/get-pip.py \
-    && python ~/get-pip.py \
-    && pip2 install --upgrade pip \
-    && pip2 install --upgrade pwntools \
-    && pip2 install pathlib2
+RUN pip3 install ropgadget && \
+    gem install one_gadget seccomp-tools
 
 RUN pip3 install z3-solver angr keystone-engine lief
 RUN pip2 install z3-solver keystone-engine
@@ -68,9 +76,9 @@ RUN git clone --depth 1 https://github.com/Gallopsled/pwntools.git ~/pwntools \
     && pip3 install --upgrade ~/pwntools \
     && echo "[update]\ninterval=never" > ~/.pwn.conf
 
-RUN apt-get install -y autoconf automake libtool && \
-    git clone https://github.com/NixOS/patchelf.git ~/patchelf && \
-    cd ~/patchelf && ./bootstrap.sh && ./configure && make && make install
+RUN apt-get install -y autoconf automake libtool
+#RUN git clone https://github.com/NixOS/patchelf.git ~/patchelf && \
+#    cd ~/patchelf && ./bootstrap.sh && ./configure && make && make install
 
 # Install glibc source
 WORKDIR /root
@@ -87,15 +95,13 @@ RUN apt-get install -y gcc-arm-linux-gnueabi gcc-arm-linux-gnueabihf gcc-aarch64
 RUN apt-get install -y gcc-mips-linux-gnu gcc-mips64-linux-gnuabi64 gcc-mips64el-linux-gnuabi64 gcc-mipsel-linux-gnu
 RUN apt-get install -y qemu qemu-user-static
 RUN apt-get install -y gdb-multiarch
-RUN git clone https://github.com/longld/peda.git ~/peda
 RUN wget -O ~/.gdbinit-gef.py -q https://gef.blah.cat/py
 RUN sed -i '1i #source ~/.gdbinit-gef.py' ~/.gdbinit
 RUN sed -i '1i #source ~/peda/peda.py' ~/.gdbinit
-RUN apt-get install -y gcc-riscv64-linux-gnu binutils-riscv64-linux-gnu
+#RUN apt-get install -y gcc-riscv64-linux-gnu binutils-riscv64-linux-gnu
 RUN apt-get install -y cpio
 RUN pip2 install pycrypto
 RUN pip3 install pycrypto
-RUN pip2 install click watchdog timeout-decorator
 
 ENV LANG=C.UTF-8
 RUN chsh -s /bin/zsh

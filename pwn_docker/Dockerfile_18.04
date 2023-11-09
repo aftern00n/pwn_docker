@@ -79,7 +79,7 @@ RUN sed -i "s/# deb-src http:\/\/mirrors.tuna.tsinghua.edu.cn/deb-src http:\/\/m
 
 RUN echo "let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'" >> ~/.vimrc
 
-COPY --from=wuhouxiaoqi/glibc_docker /glibc /glibc
+#COPY --from=wuhouxiaoqi/glibc_docker /glibc /glibc
 
 RUN apt-get update
 RUN apt-get install -y gcc-arm-linux-gnueabi gcc-arm-linux-gnueabihf gcc-aarch64-linux-gnu
@@ -91,6 +91,9 @@ RUN sed -i '1i #source ~/.gdbinit-gef.py' ~/.gdbinit
 RUN sed -i '1i #source ~/peda/peda.py' ~/.gdbinit
 RUN apt-get install -y gcc-riscv64-linux-gnu binutils-riscv64-linux-gnu
 RUN apt-get install -y cpio
+RUN pip2 install pycrypto
+RUN pip3 install pycrypto
+RUN pip2 install click watchdog timeout-decorator
 
 ENV LANG=C.UTF-8
 RUN chsh -s /bin/zsh
