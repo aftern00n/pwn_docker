@@ -1,4 +1,4 @@
-FROM ubuntu:focal
+FROM ubuntu:lunar
 RUN sed -i "s/http:\/\/archive.ubuntu.com/http:\/\/mirrors.tuna.tsinghua.edu.cn/g" /etc/apt/sources.list && \
     apt-get update && apt-get -y dist-upgrade && \
     DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata && \
@@ -21,18 +21,16 @@ RUN git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/cust
 RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 RUN sed -i "s/plugins=(git)/plugins=(git zsh-autosuggestions zsh-syntax-highlighting)/g" ~/.zshrc
 
-RUN git clone https://github.com/chxuan/vimplus.git ~/.vimplus
-RUN cd ~/.vimplus && ./install.sh
-RUN cd ~/.vim/plugged/YouCompleteMe && python3 install.py --clang-completer
+#RUN git clone https://github.com/chxuan/vimplus.git ~/.vimplus
+#RUN cd ~/.vimplus && ./install.sh
+#RUN cd ~/.vim/plugged/YouCompleteMe && python3 install.py --clang-completer
 
-RUN git clone https://github.com/pwndbg/pwndbg.git ~/pwndbg
-RUN cd ~/pwndbg && ./setup.sh
+#RUN git clone https://github.com/pwndbg/pwndbg.git ~/pwndbg
+#RUN cd ~/pwndbg && ./setup.sh
 
 RUN git clone https://github.com/scwuaptx/Pwngdb.git ~/Pwngdb
 RUN cp ~/Pwngdb/.gdbinit ~/
 RUN sed -i "s@source ~/peda/peda.py@source ~/pwndbg/gdbinit.py@g" ~/.gdbinit 
-
-RUN pip3 install pwntools
 
 RUN apt-get install -y tmux
 RUN echo "set-option -g mouse on" > ~/.tmux.conf
@@ -47,26 +45,17 @@ RUN apt-get install -y libc6-dbg && \
     apt-get install -y libc6-dbg:i386
 
 # Install ropgadget, one_gadget, seccomp-tools
-RUN pip3 install ropgadget && \
+RUN apt-get install -y python3-ropgadget && \
     apt-get install -y ruby gem ruby-dev && \
     gem install one_gadget seccomp-tools
 
-# Install python2, pip2, pwntools
-RUN apt-get install -y python python-dev \
-    && wget -P ~/ https://bootstrap.pypa.io/pip/2.7/get-pip.py \
-    && python ~/get-pip.py \
-    && pip2 install --upgrade pip \
-    && pip2 install --upgrade pwntools \
-    && pip2 install pathlib2
-
-RUN pip3 install z3-solver angr keystone-engine lief
-RUN pip2 install z3-solver keystone-engine
+#RUN pip3 install z3-solver angr keystone-engine lief
 
 # update pwntools to newest
-RUN git clone --depth 1 https://github.com/Gallopsled/pwntools.git ~/pwntools \
-    && pip2 install --upgrade ~/pwntools \
-    && pip3 install --upgrade ~/pwntools \
-    && echo "[update]\ninterval=never" > ~/.pwn.conf
+RUN apt-get install -y python3-pwntools
+#RUN git clone --depth 1 https://github.com/Gallopsled/pwntools.git ~/pwntools \
+#    && pip3 install --upgrade ~/pwntools \
+RUN echo "[update]\ninterval=never" > ~/.pwn.conf
 
 RUN apt-get install -y autoconf automake libtool && \
     git clone https://github.com/NixOS/patchelf.git ~/patchelf && \
@@ -85,7 +74,7 @@ RUN echo "let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'" >> ~/.vimrc
 RUN apt-get update
 RUN apt-get install -y gcc-arm-linux-gnueabi gcc-arm-linux-gnueabihf gcc-aarch64-linux-gnu
 RUN apt-get install -y gcc-mips-linux-gnu gcc-mips64-linux-gnuabi64 gcc-mips64el-linux-gnuabi64 gcc-mipsel-linux-gnu
-RUN apt-get install -y qemu qemu-user-static
+RUN apt-get install -y qemu-system qemu-user-static
 RUN apt-get install -y gdb-multiarch
 RUN git clone https://github.com/longld/peda.git ~/peda
 RUN wget -O ~/.gdbinit-gef.py -q https://gef.blah.cat/py
@@ -93,20 +82,11 @@ RUN sed -i '1i #source ~/.gdbinit-gef.py' ~/.gdbinit
 RUN sed -i '1i #source ~/peda/peda.py' ~/.gdbinit
 RUN apt-get install -y gcc-riscv64-linux-gnu binutils-riscv64-linux-gnu
 RUN apt-get install -y cpio
-RUN pip2 install pycrypto
-RUN pip3 install pycrypto
-RUN pip2 install click watchdog timeout-decorator
+#RUN apt-get install -y python3-pycrypto
 
-RUN apt-get install -y libvte-dev qemu-utils ipxe-qemu libvdeplug-dev libfdt-dev vim git gettext g++ autoconf automake libtool libaio1 libasound2 libbluetooth3 libc6 libcacard0 libfdt1 libgcc1 libglib2.0-0 libgnutls30 libjpeg8 libncurses5 libnuma1 libpixman-1-0 libpulse0 libsasl2-2 libsdl1.2debian libseccomp2 libspice-server1 libstdc++6 libtinfo5 libusb-1.0-0 libusbredirparser1 libuuid1 libx11-6 libxenstore3.0 zlib1g qemu-system-common libvdeplug2 bridge-utils uml-utilities
-RUN apt-get install -y libvdeplug2
-RUN wget https://nchc.dl.sourceforge.net/project/libpng/libpng12/1.2.59/libpng-1.2.59.tar.gz
-RUN tar zxvf libpng-1.2.59.tar.gz
-RUN cd libpng-1.2.59 && ./configure && make && make install
-RUN wget http://ftp.us.debian.org/debian/pool/main/v/vte2.91/libvte-2.91-0_0.54.2-2_amd64.deb
-RUN dpkg -i libvte-2.91-0_0.54.2-2_amd64.deb
-RUN apt install -f
-
-
+#RUN sed -i 's/gef➤/gef>/g' ~/.gdbinit-gef.py
+#RUN sed -i 's/collections/_collections_abc/g' ~/.vim/plugged/YouCompleteMe/third_party/ycmd/third_party/frozendict/frozendict/__init__.py
+#RUN sed -i 's/collections/_collections_abc/g' ~/.vim/plugged/YouCompleteMe/third_party/ycmd/third_party/bottle/bottle.py
 
 ENV LANG=C.UTF-8
 RUN chsh -s /bin/zsh
