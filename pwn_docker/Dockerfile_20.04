@@ -113,6 +113,10 @@ RUN apt-get install -y liblzo2-dev && \
 RUN apt-get install -y mtd-utils
 RUN apt-get install -y telnet
 
+RUN apt-get build-dep -y qemu
+RUN apt-get install -y libnfs-dev
+RUN apt-get install -y build-essential gcc pkg-config glib-2.0 libglib2.0-dev libsdl1.2-dev libaio-dev libcap-dev libattr1-dev libpixman-1-dev libsnappy-dev
+
 RUN sed -i 's/gef➤/gef>/g' ~/.gdbinit-gef.py
 
 ENV LANG=C.UTF-8
