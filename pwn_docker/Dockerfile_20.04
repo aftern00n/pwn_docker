@@ -102,11 +102,15 @@ RUN apt-get install -y libvdeplug2
 RUN wget https://nchc.dl.sourceforge.net/project/libpng/libpng12/1.2.59/libpng-1.2.59.tar.gz
 RUN tar zxvf libpng-1.2.59.tar.gz
 RUN cd libpng-1.2.59 && ./configure && make && make install
-RUN wget http://ftp.us.debian.org/debian/pool/main/v/vte2.91/libvte-2.91-0_0.54.2-2_amd64.deb
-RUN dpkg -i libvte-2.91-0_0.54.2-2_amd64.deb
-RUN apt install -f
+#RUN wget http://ftp.us.debian.org/debian/pool/main/v/vte2.91/libvte-2.91-0_0.54.2-2_amd64.deb
+#RUN dpkg -i libvte-2.91-0_0.54.2-2_amd64.deb || apt install -y -f
+COPY ./libvte-2.91-0_0.38.1-2_amd64.deb /root/libvte-2.91-0_0.38.1-2_amd64.deb
+RUN dpkg -i libvte-2.91-0_0.38.1-2_amd64.deb || apt install -y -f
 
-
+RUN apt-get install -y liblzo2-dev && \
+    git clone https://github.com/sviehb/jefferson.git && \
+    cd jefferson && python3 setup.py install
+RUN apt-get install -y telnet
 
 ENV LANG=C.UTF-8
 RUN chsh -s /bin/zsh
