@@ -95,6 +95,7 @@ RUN apt-get install -y gcc-arm-linux-gnueabi gcc-arm-linux-gnueabihf gcc-aarch64
 RUN apt-get install -y gcc-mips-linux-gnu gcc-mips64-linux-gnuabi64 gcc-mips64el-linux-gnuabi64 gcc-mipsel-linux-gnu
 RUN apt-get install -y qemu qemu-user-static
 RUN apt-get install -y gdb-multiarch
+RUN git clone https://github.com/longld/peda.git ~/peda
 RUN wget -O ~/.gdbinit-gef.py -q https://gef.blah.cat/py
 RUN sed -i '1i #source ~/.gdbinit-gef.py' ~/.gdbinit
 RUN sed -i '1i #source ~/peda/peda.py' ~/.gdbinit
@@ -106,9 +107,13 @@ RUN apt-get install -y telnet
 RUN apt-get install -y libvte-dev qemu-utils ipxe-qemu libvdeplug-dev libfdt-dev vim git gettext g++  autoconf automake libtool  libaio1 libasound2 libbluetooth3 libbrlapi0.6 libc6 libcacard0 libfdt1 libgcc1 libglib2.0-0 libgnutls30 libjpeg8 libncurses5 libnettle6 libnuma1 libpixman-1-0 libpng12-0 libpulse0 libsasl2-2 libsdl1.2debian libseccomp2 libspice-server1  libstdc++6 libtinfo5 libusb-1.0-0 libusbredirparser1 libuuid1 libx11-6 libxen-4.6  libxenstore3.0 zlib1g qemu-system-common bridge-utils uml-utilities
 RUN apt-get install -y liblzo2-dev && \
     git clone https://github.com/sviehb/jefferson.git && \
-    cd jefferson && python3 setup.py install
+    cd jefferson && python3 -m pip install -r requirements.txt && python3 setup.py install
+RUN apt-get install -y mtd-utils
+
+RUN sed -i 's/gef➤/gef>/g' ~/.gdbinit-gef.py
 
 ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 RUN chsh -s /bin/zsh
 
 ENTRYPOINT service ssh start && sleep infinity

@@ -103,6 +103,7 @@ RUN sed -i 's/collections/_collections_abc/g' ~/.vim/plugged/YouCompleteMe/third
 RUN sed -i 's/collections/_collections_abc/g' ~/.vim/plugged/YouCompleteMe/third_party/ycmd/third_party/bottle/bottle.py
 
 ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 RUN chsh -s /bin/zsh
 
 ENTRYPOINT service ssh start && sleep infinity

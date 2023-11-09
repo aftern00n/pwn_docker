@@ -109,10 +109,14 @@ RUN dpkg -i libvte-2.91-0_0.38.1-2_amd64.deb || apt install -y -f
 
 RUN apt-get install -y liblzo2-dev && \
     git clone https://github.com/sviehb/jefferson.git && \
-    cd jefferson && python3 setup.py install
+    cd jefferson && python3 -m pip install -r requirements.txt && python3 setup.py install
+RUN apt-get install -y mtd-utils
 RUN apt-get install -y telnet
 
+RUN sed -i 's/gef➤/gef>/g' ~/.gdbinit-gef.py
+
 ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 RUN chsh -s /bin/zsh
 
 ENTRYPOINT service ssh start && sleep infinity
