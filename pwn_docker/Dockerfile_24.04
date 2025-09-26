@@ -1,0 +1,101 @@
+FROM ubuntu:noble
+RUN sed -i "s/http:\/\/archive.ubuntu.com/http:\/\/mirrors.tuna.tsinghua.edu.cn/g" /etc/apt/sources.list.d/ubuntu.sources && \
+    apt-get update && apt-get -y dist-upgrade && \
+    DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata && \
+    apt-get install -y apt-utils net-tools && \
+    apt-get install -y python3 python3-pip && \
+    apt-get install -y openssh-server && \
+    apt-get install -y zsh sudo curl fonts-powerline && \
+    apt-get install -y git && \
+    apt-get install -y bsdmainutils netcat-traditional inetutils-ping && \
+    apt-get install -y ltrace strace
+
+RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+RUN mkdir -p ~/.pip && echo "[global]\nindex-url = https://mirrors.aliyun.com/pypi/simple\ntrusted-host = mirrors.aliyun.com\ntimeout = 120" > ~/.pip/pip.conf
+
+RUN git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
+RUN cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
+RUN git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+RUN sed -i "s/plugins=(git)/plugins=(git zsh-autosuggestions zsh-syntax-highlighting)/g" ~/.zshrc
+
+RUN apt-get install -y tmux
+RUN echo "set-option -g mouse on" > ~/.tmux.conf
+
+# Run 32-bit ELF
+RUN apt-get install -y libc6-dev-i386
+
+# Install glibc debugging info
+RUN apt-get install -y libc6-dbg && \
+    dpkg --add-architecture i386 && \
+    apt-get update && \
+    apt-get install -y libc6-dbg:i386
+
+# Install ropgadget, one_gadget, seccomp-tools
+RUN apt-get install -y python3-ropgadget && \
+    apt-get install -y ruby gem ruby-dev && \
+    gem install one_gadget seccomp-tools
+
+# install patchelf
+RUN apt-get install -y autoconf automake libtool && \
+    git clone https://github.com/NixOS/patchelf.git ~/patchelf && \
+    cd ~/patchelf && ./bootstrap.sh && ./configure && make && make install
+
+# Install glibc source
+WORKDIR /root
+RUN sed -i "s@Types: deb@Types: deb deb-src@g" /etc/apt/sources.list.d/ubuntu.sources && \
+    apt-get update && \
+    apt-get install dpkg-dev && \
+    apt-get source libc6-dev
+
+# install gcc cross compile tools and qemu
+RUN apt-get update
+RUN apt-get install -y gcc-arm-linux-gnueabi gcc-arm-linux-gnueabihf gcc-aarch64-linux-gnu
+RUN apt-get install -y gcc-mips-linux-gnu gcc-mips64-linux-gnuabi64 gcc-mips64el-linux-gnuabi64 gcc-mipsel-linux-gnu
+RUN apt-get install -y gcc-riscv64-linux-gnu binutils-riscv64-linux-gnu
+RUN apt-get install -y qemu-system qemu-user-static qemu-utils
+RUN apt-get install -y gdb-multiarch
+
+RUN git clone https://github.com/pwndbg/pwndbg.git ~/pwndbg
+RUN cd ~/pwndbg && ./setup.sh
+
+RUN git clone https://github.com/scwuaptx/Pwngdb.git ~/Pwngdb
+RUN cp ~/Pwngdb/.gdbinit ~/
+RUN sed -i "s@source ~/peda/peda.py@source ~/pwndbg/gdbinit.py@g" ~/.gdbinit 
+
+RUN git clone https://github.com/longld/peda.git ~/peda
+RUN wget -O ~/.gdbinit-gef.py -q https://gef.blah.cat/py
+RUN sed -i '1i #source ~/.gdbinit-gef.py' ~/.gdbinit
+RUN sed -i '1i #source ~/peda/peda.py' ~/.gdbinit
+#RUN sed -i 's/gef➤/gef>/g' ~/.gdbinit-gef.py
+
+RUN apt-get install -y cpio
+
+# install pwntools and other pakages needed in pwn
+RUN apt-get install -y python3-venv
+RUN python3 -m venv ~/.local/base
+RUN . ~/.local/base/bin/activate && pip3 install pwntools pycryptodome z3-solver angr keystone-engine lief
+RUN echo "[update]\ninterval=never" > ~/.pwn.conf
+
+# install vimplus and YouCompleteMe
+RUN useradd -m ctf
+RUN echo "ctf:ctf" | chpasswd
+RUN echo "ctf ALL=(root) NOPASSWD:ALL" >> /etc/sudoers
+USER ctf
+RUN git clone https://github.com/chxuan/vimplus.git ~/.vimplus
+RUN cd ~/.vimplus && ./install.sh
+RUN cd ~/.vim/plugged && rm -rf YouCompleteMe && git clone --recursive https://github.com/ycm-core/YouCompleteMe.git && cd YouCompleteMe && python3 install.py --clang-completer
+
+#RUN echo "let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'" >> ~/.vimrc
+#RUN sed -i 's/collections/_collections_abc/g' ~/.vim/plugged/YouCompleteMe/third_party/ycmd/third_party/frozendict/frozendict/__init__.py
+#RUN sed -i 's/collections/_collections_abc/g' ~/.vim/plugged/YouCompleteMe/third_party/ycmd/third_party/bottle/bottle.py
+
+USER root
+ENV LANG=C.UTF-8
+RUN chsh -s /bin/zsh
+RUN cd /home/ctf/.vimplus && ./install_to_user.sh root
+
+#COPY --from=wuhouxiaoqi/glibc_docker /glibc /glibc
+
+ENTRYPOINT service ssh start && sleep infinity

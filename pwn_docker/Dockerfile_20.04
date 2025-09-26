@@ -97,6 +97,7 @@ RUN pip2 install pycrypto
 RUN pip3 install pycrypto
 RUN pip2 install click watchdog timeout-decorator
 
+# install OpenHarmonyEmulator
 RUN apt-get install -y libvte-dev qemu-utils ipxe-qemu libvdeplug-dev libfdt-dev vim git gettext g++ autoconf automake libtool libaio1 libasound2 libbluetooth3 libc6 libcacard0 libfdt1 libgcc1 libglib2.0-0 libgnutls30 libjpeg8 libncurses5 libnuma1 libpixman-1-0 libpulse0 libsasl2-2 libsdl1.2debian libseccomp2 libspice-server1 libstdc++6 libtinfo5 libusb-1.0-0 libusbredirparser1 libuuid1 libx11-6 libxenstore3.0 zlib1g qemu-system-common libvdeplug2 bridge-utils uml-utilities
 RUN apt-get install -y libvdeplug2
 RUN wget https://nchc.dl.sourceforge.net/project/libpng/libpng12/1.2.59/libpng-1.2.59.tar.gz
@@ -107,9 +108,11 @@ RUN cd libpng-1.2.59 && ./configure && make && make install
 COPY ./libvte-2.91-0_0.38.1-2_amd64.deb /root/libvte-2.91-0_0.38.1-2_amd64.deb
 RUN dpkg -i libvte-2.91-0_0.38.1-2_amd64.deb || apt install -y -f
 
+# install JFFS2 filesystem extraction tool
 RUN apt-get install -y liblzo2-dev && \
     git clone https://github.com/sviehb/jefferson.git && \
     cd jefferson && python3 -m pip install -r requirements.txt && python3 setup.py install
+
 RUN apt-get install -y mtd-utils
 RUN apt-get install -y telnet
 
